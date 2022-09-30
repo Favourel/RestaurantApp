@@ -1,8 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from .models import Product, Order, Review
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+
 
 # Create your views here.
 
@@ -25,7 +27,6 @@ def add_to_cart(request, pk):
         order, created = Order.objects.get_or_create(
             customer=customer, product=product, completed=False,
         )
-        # orderItem, created = OrderItem.objects.get_or_create(customer=customer, order=order, product=product)
         order.quantity = (order.quantity + 1)
         order.price = (order.quantity * order.product.price)
         order.save()
@@ -44,6 +45,7 @@ def add_to_cart(request, pk):
     return Response(data)
 
 
+@api_view(["GET"])
 @login_required
 def remove_from_cart(request, pk):
     customer = request.user
@@ -51,16 +53,49 @@ def remove_from_cart(request, pk):
     order, created = Order.objects.get_or_create(
         customer=customer, product=product, completed=False,
     )
-    # orderItem, created = OrderItem.objects.get_or_create(customer=customer, order=order, product=product)
-    if order.objects.filter(customer=customer, order=order, product=order.product).exists():
+    order.quantity = (order.quantity - 1)
+    order.price = (order.quantity * order.product.price)
+    order.save()
+    if order.quantity <= 0:
         order.delete()
         message_updated = f"'{product.name}' has been removed from your cart"
         return Response(message_updated)
 
 
 @login_required
-def cart(request):
-    context = {
+def delete_from_cart(request, pk):
+    customer = request.user
+    product = get_object_or_404(Product, pk=pk)
+    order = Order.objects.filter(customer=customer, product=product)
+    if order.exists():
+        order.delete()
+        messages.success(request, f"'{product.name}' has been deleted from your cart")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
+@login_required
+def cart(request):
+    customer = request.user
+    orders = Order.objects.filter(customer=customer, completed=False).order_by("-date_added")
+    cart_total = sum([(item.product.price * item.quantity) for item in orders])
+    get_cart_items = sum([item.quantity for item in orders])
+    context = {
+        "orders": orders,
+        "get_cart_total": cart_total,
+        "get_cart_items": get_cart_items
     }
     return render(request, "restaurant/cart.html", context)
+
+
+@login_required
+def process_order(request):
+    orders = Order.objects.filter(
+        customer=request.user, completed=False,
+    )
+    queryset = []
+    for item in orders:
+        queryset.append(item.completed == True)
+        item.completed = True
+        item.save()
+    messages.success(request, "Order has been successful😉")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

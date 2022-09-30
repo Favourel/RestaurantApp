@@ -49,7 +49,7 @@
                             href="{% url 'register' %}" style="padding: 10px 20px;">Sign up</a>
                     </li><li class="u-nav-item"><a
                             class="u-active-grey-5 u-button-style u-hover-grey-10 u-nav-link u-text-active-grey-90 u-text-grey-90 u-text-hover-grey-90"
-                            href="" style="padding: 10px 20px;">Login</a>
+                            href="{% url 'login' %}" style="padding: 10px 20px;">Login</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -70,7 +70,7 @@
                             <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'register' %}"
                                                       style="padding: 10px 20px;">Sign up</a>
                             </li>
-                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href=""
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'login' %}"
                                                       style="padding: 10px 20px;">Login</a>
                             </li>
                             {% endif %}

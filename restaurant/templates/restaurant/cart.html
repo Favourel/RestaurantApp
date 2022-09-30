@@ -1,260 +1,340 @@
-{% extends 'store/base.html' %}
+<!doctype html>
 {% load static %}
-{% block title %} MyEshop | Cart {% endblock %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="{% static 'images/falcon_LGfm6ox.png' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="https://cdn.ayroui.com/1.0/css/tiny-slider.css"/>
+    <script src="{% static 'js/reconnecting-websocket.js' %}"></script>
 
-{% block content %}
-{% include "store/nav.html" %}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    />
+
+    <!-- Bootstrap CSS -->
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"
             integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
             crossorigin="anonymous"></script>
+    <!--    <meta name="color-scheme" content="dark">-->
 
     <!-- Bootstrap files (jQuery first, then Popper.js, then Bootstrap JS) -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
           type="text/css"/>
-<h4 class="text-dark">Cart
-    ({{ cartItems }} {% if cartItems > 1 %} items{% else %} item{% endif %})
-</h4>
-<!--{{ vendor_email_list }}-->
-<!--{{ sessions }}-->
-<div class="row screen">
-    <br>
-    <div class="col-lg-9">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+
+    <title>CART</title>
+</head>
+<!--{% include "restaurant/navbar.html" %}-->
+<style>
+    .alert-success {
+        font-weight: 400;
+        font-size: 13px;
+        margin: 0 0 10px 0;
+        background: #e81922 url(../images/icon-yes.svg) 40px 12px no-repeat;
+        background-size: 16px auto;
+        color: #fff;
+    }
+
+</style>
+
+<style>
+    @media (min-width: 48em) {
+        #overlay{
+          z-index: 2; /* Sit on top */
+          position: fixed; /* Stay in place */
+          right: 10px;
+          bottom: 110px;
+          width: 100%; /* Full width */
+          height: auto; /* Full height */
+          text-align: center;
+          margin-right: auto;
+           margin-left: auto;
+           max-width: 500px;
+          box-shadow:hsl(0, 0%, 80%) 0 0 16px;
+          padding: 12px;
+
+
+           -ms-flex-align: center;
+           align-items: center;
+
+        }
+    }
+    @media only screen and (max-width: 1000px) {
+        #overlay{
+          position: fixed; /* Stay in place */
+          z-index: -1; /* Sit on top */
+          padding-bottom: 80px; /* Location of the box */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: auto; /* Full height */
+          text-align: center;
+        }
+    }
+</style>
+<script type="text/javascript">
+    window.setTimeout("document.getElementById('overlay').style.display='none';", 5000);
+</script>
+<b class="screen-overlay"></b>
+{% if messages %}
+
+{% for msg in messages %}
+<div id="overlay" class="alert alert-{{ msg.tags }}  fade show" role="alert">
+    <b id="msg-text">
+        {% if msg.tags == 'error' %}
+        <svg width="1.4rem" height="1.4rem" class="ml-3" viewBox="0 0 1792 1792"
+             xmlns="http://www.w3.org/2000/svg">
+            <path fill="#dd4646"
+                  d="M1277 1122q0-26-19-45l-181-181 181-181q19-19 19-45 0-27-19-46l-90-90q-19-19-46-19-26 0-45 19l-181 181-181-181q-19-19-45-19-27 0-46 19l-90 90q-19 19-19 46 0 26 19 45l181 181-181 181q-19 19-19 45 0 27 19 46l90 90q19 19 46 19 26 0 45-19l181-181 181 181q19 19 45 19 27 0 46-19l90-90q19-19 19-46zm387-226q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/>
+        </svg>
+        {% endif %}
+        {% if msg.tags == 'success' %}
+        <svg width="1.4rem" height="1.4rem" class="ml-3" viewBox="0 0 1792 1792"
+             xmlns="http://www.w3.org/2000/svg">
+            <path fill="#70bf2b"
+                  d="M1412 734q0-28-18-46l-91-90q-19-19-45-19t-45 19l-408 407-226-226q-19-19-45-19t-45 19l-91 90q-18 18-18 46 0 27 18 45l362 362q19 19 45 19 27 0 46-19l543-543q18-18 18-45zm252 162q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/>
+        </svg>
+        {% endif %}
+        {% if msg.tags == 'info' %}
+        <svg width="1.4rem" height="1.4rem" class="ml-3" viewBox="0 0 1792 1792"
+             xmlns="http://www.w3.org/2000/svg">
+            <path fill="#efb80b"
+                  d="M1024 1375v-190q0-14-9.5-23.5t-22.5-9.5h-192q-13 0-22.5 9.5t-9.5 23.5v190q0 14 9.5 23.5t22.5 9.5h192q13 0 22.5-9.5t9.5-23.5zm-2-374l18-459q0-12-10-19-13-11-24-11h-220q-11 0-24 11-10 7-10 21l17 457q0 10 10 16.5t24 6.5h185q14 0 23.5-6.5t10.5-16.5zm-14-934l768 1408q35 63-2 126-17 29-46.5 46t-63.5 17h-1536q-34 0-63.5-17t-46.5-46q-37-63-2-126l768-1408q17-31 47-49t65-18 65 18 47 49z"/>
+        </svg>
+
+        {% endif %}
+        {{ msg|upper }}
+    </b>
+
+</div>
+{% endfor %}
+{% endif %}
+<div class="container mt-5">
+
+    <h4 class="text-dark">Cart
+        ({{ get_cart_items }} {% if get_cart_items > 1 %} items{% else %} item{% endif %})
+    </h4>
+    <div class="row screen">
         <br>
-        <section>
-            <div class="cart-row d-md-flex d-none">
-                <div style="flex:4;opacity: .7" class="mr-2">
-                    <h5 class="text-muted">ITEM</h5>
-                </div>
-                <div style="flex:4;opacity: .7"></div>
-                <div style="flex:2;opacity: .7"></div>
+        <div class="col-lg-9">
+            <br>
+            <section>
+                <div class="cart-row d-md-flex d-none">
+                    <div style="flex:4;opacity: .7" class="mr-2">
+                        <h5 class="text-muted">ITEM</h5>
+                    </div>
+                    <div style="flex:4;opacity: .7"></div>
+                    <div style="flex:2;opacity: .7"></div>
 
-                <div style="flex:4;opacity: .7"><h5 class="text-muted">PRICE</h5></div>
-                <div style="flex:5;opacity: .7"><h5 class="text-muted">QUANTITY</h5></div>
-                <div style="flex:4;opacity: .7">
-                    <h5 class="text-muted">TOTAL</h5>
+                    <div style="flex:4;opacity: .7"><h5 class="text-muted">PRICE</h5></div>
+                    <div style="flex:5;opacity: .7"><h5 class="text-muted">QUANTITY</h5></div>
+                    <div style="flex:4;opacity: .7">
+                        <h5 class="text-muted">TOTAL</h5>
+                    </div>
                 </div>
-            </div>
 
-            {% for item in items %}
-            <div class="box-element">
-                <div class="cart">
-                    <div class="cart-body">
-                        <div class="cart-item">
-                            <div class="d-flex align-items-center text-left text-md-center row">
-                                <div class="col-12 col-md-5">
-                                    <a class="cart-remove close mt-3 d-md-none update-cart" data-toggle="tooltip" title="Remove from Cart" data-placement="left"
-                                       data-product="{{ item.product.id }}" data-action="delete" href="#">X</a>
-                                    <div class="d-flex align-items-center">
-                                        <a href="{% url 'store-detail' item.product.id %}">
-                                            <img height="70px" width="70px" src="{{ item.product.imageURL }}" alt=""
-                                                 class="row-ima">
-                                        </a>
-                                        <div class="cart-title text-left">
-                                            <a class="text-dark link-animated"
-                                               href="{% url 'store-detail' item.product.id %}">
-                                                <strong>{{ item.product.name }}
-                                                </strong>
+                {% for item in orders %}
+                <div class="box-element">
+                    <div class="cart">
+                        <div class="cart-body">
+                            <div class="cart-item">
+                                <div class="d-flex align-items-center text-left text-md-center row">
+                                    <div class="col-12 col-md-5">
+                                        <a class="cart-remove close mt-3 d-md-none update-cart" data-toggle="tooltip"
+                                           title="Remove from Cart" data-placement="left"
+                                           data-product="{{ item.product.id }}" data-action="delete" href="#">X</a>
+                                        <div class="d-flex align-items-center">
+                                            <a href="/">
+                                                <img height="70px" width="70px" src="{{ item.product.image.url }}" alt=""
+                                                     class="row-ima">
                                             </a>
-                                            <br>
-<!--                                            <span class="text-muted text-sm">Description:-->
-<!--                                            {{ item.product.description|safe|truncatewords:"4"|linebreaks }}-->
-<!--                                            </span>-->
-                                            <div class="d-md-block d-none">
-                                                <a href="tel:{{ item.product.seller.phone_number }}"
-                                                   style="font-size: 11px"
-                                                   class="text-decoration-none">
-                                                    <p class="btn-call" onclick="off()">
-                                                        <svg width="1em" height="1em" viewBox="0 0 16 16"
-                                                             class="bi bi-telephone-outbound-fill"
-                                                             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                            <path fill-rule="evenodd"
-                                                                  d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511zM11 .5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V1.707l-4.146 4.147a.5.5 0 0 1-.708-.708L14.293 1H11.5a.5.5 0 0 1-.5-.5z"/>
-                                                        </svg>
-                                                        {{ item.product.seller.phone_number }}
-                                                    </p>
+                                            <div class="cart-title text-left">
+                                                <a class="text-dark link-animated"
+                                                   href="/">
+                                                    <strong>{{ item.product.name }}
+                                                    </strong>
                                                 </a>
+                                                <br>
+
                                             </div>
+                                            <style>
+
+                                                .cart-title {
+                                                    margin-left: 1rem;
+
+                                                }
+                                                .text-left {
+                                                    text-align: left!important;
+                                                }
+                                                .cart-remove {
+                                                    color: #495057;
+                                                    font-size: .975rem;
+                                                    transition: .4s;
+                                                }
+                                                .cart-remove:hover {
+                                                    color: #495057;
+                                                    font-size: 1.2rem;
+
+                                                }
+                                                .link-animated {
+                                                    position: relative;
+                                                    text-decoration: none;
+                                                }
+                                                .text-dark {
+                                                    color: #212529!important;
+                                                }
+                                                .text-sm {
+                                                    font-size: .875rem;
+                                                }
+                                                .text-muted {
+                                                    color: #868e96!important;
+                                                }
+
+                                                .text-center {
+                                                    text-align: center!important;
+                                                }
+                                                .border-0 {
+                                                    border: 0!important;
+                                                }
+                                            </style>
                                         </div>
-                                        <style>
-
-                                        .cart-title {
-                                            margin-left: 1rem;
-
-                                        }
-                                        .text-left {
-                                            text-align: left!important;
-                                        }
-                                        .cart-remove {
-                                            color: #495057;
-                                            font-size: .975rem;
-                                            transition: .4s;
-                                        }
-                                        .cart-remove:hover {
-                                            color: #495057;
-                                            font-size: 1.2rem;
-
-                                        }
-                                        .link-animated {
-                                            position: relative;
-                                            text-decoration: none;
-                                        }
-                                        .text-dark {
-                                            color: #212529!important;
-                                        }
-                                        .text-sm {
-                                            font-size: .875rem;
-                                        }
-                                        .text-muted {
-                                            color: #868e96!important;
-                                        }
-
-                                        .text-center {
-                                            text-align: center!important;
-                                        }
-                                        .border-0 {
-                                            border: 0!important;
-                                        }
-
-
-
-                                        </style>
                                     </div>
-                                </div>
-                                <div class="mt-4 mt-md-0 col-12 col-md-7">
-                                    <div class="align-items-center row">
-                                        <div class="col-md-3">
-                                            <div class="row">
-                                                <div class="d-md-none text-muted col-6">Price per item</div>
-                                                <b class="text-right text-md-center col-6 col-md-12">
-                                                    ₦{{ item.product.price|floatformat:'2' }}
-                                                </b>
+                                    <div class="mt-4 mt-md-0 col-12 col-md-7">
+                                        <div class="align-items-center row">
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="d-md-none text-muted col-6">Price per item</div>
+                                                    <b class="text-right text-md-center col-6 col-md-12">
+                                                        ${{ item.product.price|floatformat:'2' }}
+                                                    </b>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="align-items-center row">
-                                                <div class="text-muted d-md-none col-7 col-sm-9">Quantity</div>
-                                                <div class="col-5 col-sm-3 col-md-12">
-                                                    <div class="d-flex align-items-center">
-                                                        <button data-product="{{ item.product.id }}" data-action="add"
-                                                                class="update-cart text-decoration-none btn-sm btn-info">
-                                                            <b>+</b>
-                                                        </button>
-                                                        <b class="text-center border-0 border-md input-items form-control">
-                                                            {{ item.quantity }}
-                                                        </b>
+                                            <div class="col-md-4">
+                                                <div class="align-items-center row">
+                                                    <div class="text-muted d-md-none col-7 col-sm-9">Quantity</div>
+                                                    <div class="col-5 col-sm-3 col-md-12">
+                                                        <div class="d-flex align-items-center">
+                                                            <button data-product="{{ item.product.id }}"
+                                                                    data-action="add" data-href="{{ item.product.get_add_to_cart_url}}"
+                                                                    class="update-cart text-decoration-none btn-sm btn-warning">
+                                                                <b>+</b>
+                                                            </button>
+                                                            <b class="text-center border-0 border-md input-items form-control">
+                                                                {{ item.quantity }}
+                                                            </b>
 
-                                                        <button data-product="{{ item.product.id }}"
-                                                                data-action="remove"
-                                                                class="text-decoration-none btn-sm btn-danger update-cart">
-                                                            <b>-</b>
-                                                        </button>
+                                                            <button data-product="{{ item.product.id }}"
+                                                                    data-action="remove"
+                                                                    class="text-decoration-none btn-sm btn-danger update-cart">
+                                                                <b>-</b>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="row">
-                                                <div class="d-md-none text-muted col-6">Total price</div>
-                                                <b class="text-right text-md-center col-6 col-md-12">
-                                                    ₦{{ item.get_total|floatformat:'2' }}
-                                                </b>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="d-md-none text-muted col-6">Total price</div>
+                                                    <b class="text-right text-md-center col-6 col-md-12">
+                                                        ${{ item.get_total|floatformat:'2' }}
+                                                    </b>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="d-md-block d-none text-center col-2"
-                                             data-toggle="tooltip" title="Remove from Cart" data-placement="top">
-                                            <a class="cart-remove text-muted update-cart"
-                                               data-product="{{ item.product.id }}" data-action="delete">
-                                                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-trash"
-                                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                                    <path fill-rule="evenodd"
-                                                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <hr>
-                                        <div class="col-lg-2 text-center line text-lg-center d-md-none">
-                                            <a href="tel:{{ item.product.seller.phone_number }}"
-                                               class="btn btn-block btn-info">
-                                                <svg width="1em" height="1em" viewBox="0 0 16 16"
-                                                     class="bi bi-telephone-outbound-fill"
-                                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd"
-                                                          d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511zM11 .5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V1.707l-4.146 4.147a.5.5 0 0 1-.708-.708L14.293 1H11.5a.5.5 0 0 1-.5-.5z"/>
-                                                </svg>
-                                                Call to order
-                                            </a>
+                                            <div class="d-md-block d-none text-center col-2"
+                                                 data-toggle="tooltip" title="Remove from Cart" data-placement="top">
+                                                <a class="cart-remove text-muted update-cart" href="{{item.product.get_delete_to_cart_url}}"
+                                                   data-product="{{ item.product.id }}" data-action="delete">
+                                                    <svg width="2em" height="2em" viewBox="0 0 16 16"
+                                                         class="bi bi-trash"
+                                                         fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                        <path fill-rule="evenodd"
+                                                              d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                            <hr>
+                                            <div class="col-lg-2 text-center line text-lg-center d-md-none">
+                                                <a href="tel:{{ item.product.seller.phone_number }}"
+                                                   class="btn btn-block btn-info">
+                                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                         class="bi bi-telephone-outbound-fill"
+                                                         fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd"
+                                                              d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511zM11 .5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V1.707l-4.146 4.147a.5.5 0 0 1-.708-.708L14.293 1H11.5a.5.5 0 0 1-.5-.5z"/>
+                                                    </svg>
+                                                    Call to order
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                </div>
-            </div>
-            <br>
-            {% endfor %}
-        </section>
-    </div>
-    <div class="col-lg-3">
-        <div class="sticky-top" style="top: 100px">
-            <div class="box-element">
-                <div class="card-headr"><h4>Order Summary</h4></div>
-                <style>
-                .card-header:first-child {
-                        border-radius: 5px 5px 0 0;
-                    }
-                    .card-header {
-                        padding: .75rem 1.25rem;
-                        margin-bottom: 0;
-                        background-color: rgba(0,0,0,.03);
-                        border-bottom: 0 solid transparent;
-                    }
-                </style>
-                <table class="table table-hover">
-<!--                    <tr>-->
-<!--                        <th><h5>Items: </h5></th>-->
-<!--                        <th><h5>{{ order.get_cart_items }}</h5></th>-->
-<!--                    </tr>-->
-                    <tr>
-                        <th><h5 class="mt-2">Subtotal: </h5></th>
-                        <th><h5 class="mt-2">₦{{ order.get_cart_total|floatformat:2 }}</h5></th>
-                    </tr>
-                </table>
-                <hr>
-                <li class="text-muted">Contact seller through their phone number</li>
-                <li class="text-muted">Please hold exact delivery fee when seller arrives</li>
-                <li class="text-muted">Clicking complete order means you have contacted the seller and you want the
-                    product(s)
-                </li>
-                <li class="text-muted">Delivery fee will be contacted from the vendor</li>
-                <br>
-                {% if items|length == 0 %}
-                {% else %}
-<!--                <a href="{% url 'process__order' %}" class="btn btn-info btn-block">-->
-<!--                    CONFIRM ORDER-->
-<!--                </a>-->
-                <button id="make-payment" class="btn btn-block btn-info">
-                    <div class="spinner-border text-light hide" id="spinner" role="status">
-                        <span class="sr-only">Loading...</span>
                     </div>
-                    <span id="button-text">CONFIRM ORDER</span>
-                </button>
-                <style>
-                    .spinner-border {
-                        width: 1.5rem;
-                        height: 1.5rem;
-                    }
-                </style>
-                {% endif %}
+                </div>
+                <br>
+                {% endfor %}
+            </section>
+        </div>
+        <div class="col-lg-3">
+            <div class="sticky-top" style="top: 100px">
+                <div class="box-element">
+                    <div class="card-headr"><h4>Order Summary</h4></div>
+                    <style>
+                        .card-header:first-child {
+                                border-radius: 5px 5px 0 0;
+                            }
+                            .card-header {
+                                padding: .75rem 1.25rem;
+                                margin-bottom: 0;
+                                background-color: rgba(0,0,0,.03);
+                                border-bottom: 0 solid transparent;
+                            }
+                    </style>
+                    <table class="table table-hover">
+                        <tr>
+                            <th><h5>Items: </h5></th>
+                            <th><h5>{{ get_cart_items }}</h5></th>
+                        </tr>
+                        <tr>
+                            <th><h5 class="mt-2">Subtotal: </h5></th>
+
+                            <th><h5 class="mt-2">${{ get_cart_total|floatformat:2 }}</h5></th>
+
+                        </tr>
+                    </table>
+                    <hr>
+                    <br>
+                    {% if get_cart_items > 0 %}
+                    <!--                <a href="/" class="btn btn-info btn-block">-->
+                    <!--                    CONFIRM ORDER-->
+                    <!--                </a>-->
+                    <a id="make-payment" class="btn btn-block btn-info" href="{% url 'process_order' %}">
+                        <div class="spinner-border text-light hide" id="spinner" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <span id="button-text">CONFIRM ORDER</span>
+                    </a>
+                    <style>
+                        .spinner-border {
+                            width: 1.5rem;
+                            height: 1.5rem;
+                        }
+                    </style>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -262,10 +342,22 @@
 <br>
 <br>
 <style>
-    .hide {
-        display: none;
-    }
+.hide {
+    display: none;
+}
+.btn{
+background: #e81922;
+border-color: #e81922;
+color: #fff;
+}
+.btn:hover{
+background: #e81922;
+border-color: #e81922;
+color: #fff;
+}
 
+a {color: #e81922;}
+a:hover{color:#e81922}
 
 </style>
 <script>
@@ -291,52 +383,9 @@
         }
     };
 
-
-
-
 </script>
 
-<script>
-    var total = '{{ order.get_cart_total|floatformat:2 }}'
-    if(user != 'AnonymousUser'){
-        document.getElementById('make-payment').addEventListener('click', function(e){
-            submitFormData()
-    })
-    }else{
-        alert('You must login to view this page!')
-        window.location.href = '../../../../../../login/'
-    }
 
-    function submitFormData(){
-    console.log('Payment button clicked')
-    var userFormData = {
-
-        'total':total
-            }
-        var url = '/process_order/'
-
-        fetch(url,
-        {method: 'POST',
-        headers: {'Content-Type': '/application/json', 'X-CSRFToken':csrftoken,},
-        body:JSON.stringify({'form': userFormData})
-        }
-        )
-
-        .then((response) =>{
-        return response.json()
-        })
-
-        .then((data) =>{
-        console.log('Success:', data);
-
-        window.location.href = '/profile/orders/'
-        })
-    }
-
-
-
-
-</script>
 <style>
 .row-imagek {
     height: 80px;
@@ -361,8 +410,13 @@
 }
 }
 
-
-
 </style>
 
-{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+</html>

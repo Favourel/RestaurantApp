@@ -72,7 +72,7 @@
                 <div class="u-effect-fade u-effect-hover-zoom u-gallery-item u-shape-rectangle">
                     <div class="u-back-slide" data-image-width="626" data-image-height="417">
                         <img class="u-back-image u-expanded"
-                             src="{% static 'images/site_images/greek-salad-with-fresh-tomato-cucumber-red-onion-basil-feta-cheese-black-olives-italian-herbs_2829-4480.jpg' %}">
+                             src="{% static 'images/site_images/GREEK SALAD.jpg' %}">
                     </div>
                     <div class="u-over-slide u-over-slide-1">
                         <h3 class="u-gallery-heading"></h3>
@@ -358,10 +358,13 @@
                               var newLikes;
                               if (data.updated){
                                   //$(".message").text(data.like_count);
-                                  console.log("test")
+                                  //$('.toast').toast('show');
+                                   $("#json_messages").text(data.like_count);
+                                   alert(data.message)
 
                               } else {
                                   $("._result").text(data.like_count);
+
                               }
 
                             }, error: function(error){
@@ -380,6 +383,7 @@
 
     </div>
 </section>
+
 
 <section class="u-align-center u-clearfix u-image u-valign-middle u-section-7" id="carousel_0e7a">
     <div id="carousel-5989" data-interval="5000" data-u-ride="carousel" class="u-carousel u-slider u-slider-1">

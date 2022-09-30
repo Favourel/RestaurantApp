@@ -7,48 +7,21 @@ from django.core.exceptions import ValidationError
 # Create your models here.
 
 
-# class Category(models.Model):
-#     name = models.CharField(max_length=70, null=True, blank=True, default=1)
-#     date_added = models.DateTimeField(default=timezone.now)
-#
-#     def __str__(self):
-#         return self.name
-#
-#     @staticmethod
-#     def getAllCategory():
-#         return Category.objects.all()
-
-
 class Product(models.Model):
     name = models.CharField(max_length=220, null=True, blank=True)
     price = models.FloatField(default=0, null=True, blank=True)
     description = models.TextField()
     image = models.ImageField(upload_to='products')
-    # category = models.ForeignKey(Category, on_delete=models.CASCADE, default=2)
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
 
-    # All Product get
-    @staticmethod
-    def getAllProduct():
-        return Product.objects.all()
-
-    # Filter Product By Category
-    # @staticmethod
-    # def getProductByFilter(category_id):
-    #     if category_id:
-    #         return Product.objects.filter(category=category_id)
-    #     else:
-    #         return Product.getAllProduct()
-
-    @staticmethod
-    def getProductById(productList):
-        return Product.objects.filter(id__in=productList)
-
     def get_add_to_cart_url(self):
         return reverse('add-to-cart', kwargs={'pk': self.pk})
+
+    def get_delete_to_cart_url(self):
+        return reverse('delete-from-cart', kwargs={'pk': self.pk})
 
 
 class Order(models.Model):
@@ -63,6 +36,10 @@ class Order(models.Model):
 
     def __str__(self):
         return f"{self.product}"
+
+    def get_total(self):
+        total = self.product.price * self.quantity
+        return total
 
 
 class Review(models.Model):
