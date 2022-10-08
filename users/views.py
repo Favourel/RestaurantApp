@@ -12,14 +12,15 @@ def register(request):
         if form.is_valid():
             form_password = form.clean_password2()
             form = form.save(commit=False)
-            form.save()
-            username = form.username
-            password = form.password
-            print(username, password)
-
-            auth_login = auth.authenticate(username=username, password=form_password)
-            auth.login(request, auth_login)
-            return redirect("home")
+            email = form.email
+            if User.objects.filter(email=email).exists():
+                messages.error(request, "Email already exists.")
+                return redirect("register")
+            else:
+                form.save()
+                auth_login = auth.authenticate(username=form.username, password=form_password)
+                auth.login(request, auth_login)
+                return redirect("home")
     else:
         form = UserRegisterForm()
     context = {
