@@ -8,5 +8,6 @@ urlpatterns = [
     path("<int:pk>/delete-from-cart/", product_view.delete_from_cart, name="delete-from-cart"),
     path("cart/", product_view.cart, name="cart"),
     path("process-order/", product_view.process_order, name="process_order"),
+    path("reservation/", product_view.place_reservation, name="process_reservation"),
 
 ]

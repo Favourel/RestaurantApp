@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from .forms import ReservationForm
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -11,8 +13,10 @@ from rest_framework.decorators import api_view
 
 def index(request):
     products = Product.objects.all().order_by("-id")
+    form = ReservationForm()
     context = {
-        "products": products
+        "products": products,
+        "form": form
     }
     return render(request, "restaurant/Home.html", context)
 
@@ -99,3 +103,21 @@ def process_order(request):
         item.save()
     messages.success(request, "Order has been successful😉")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def place_reservation(request):
+    if request.method == "POST":
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            data = {
+                "message": "You have successfully placed your reservation"
+            }
+            return JsonResponse(data)
+    else:
+        form = ReservationForm()
+        context = {
+            "form": form
+        }
+        return render(request, "", context)
+

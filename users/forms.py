@@ -15,3 +15,10 @@ class UserRegisterForm(UserCreationForm):
     #     check_email = User.objects.filter(email=email).exists()
     #     if check_email:
     #         raise forms.ValidationError("Email already exists.")
+
+
+class UserUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "phone_number", "address"]

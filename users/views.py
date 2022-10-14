@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
-from .forms import UserRegisterForm
+from django.shortcuts import render, redirect, HttpResponseRedirect
+from .forms import UserRegisterForm, UserUpdateForm
 from django.contrib.auth.models import auth
 from .models import User
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -27,4 +28,25 @@ def register(request):
         "form": form
     }
     return render(request, "users/register.html", context)
+
+
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.save()
+            messages.success(request, 'Your account has been updated!')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            messages.warning(request, 'error')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        form = UserUpdateForm(instance=request.user)
+    context = {
+        "form": form,
+    }
+    return render(request, '', context)
 
